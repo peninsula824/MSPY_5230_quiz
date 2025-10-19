@@ -1,0 +1,646 @@
+\documentclass[10pt, a4paper]{article}
+
+% PACKAGES for layout, spacing, and formatting
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{multicol}
+\usepackage{parskip}
+\usepackage{setspace} % For line spacing control
+\usepackage{amsmath}  % Added for math formulas
+\usepackage{enumitem}
+\usepackage{listings} % For code listings
+\usepackage{xcolor}   % For code syntax highlighting colors
+\usepackage{caption}  % For captions on listings
+% GEOMETRY: Ultra-tight margins to use the entire page
+
+\geometry{
+    a4paper,
+    text={198mm,287mm}, % Maximized text area
+    left=6mm,
+    top=5mm,
+}
+
+% CUSTOM COMMANDS for the most compact headings possible
+\newcommand{\cmd}[1]{\texttt{\textbf{#1}}}
+% Define a compact style for Python code listings
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codered}{rgb}{0.8,0,0}
+\definecolor{codeblue}{rgb}{0,0,0.8}
+
+\lstdefinestyle{pythoncompact}{
+    backgroundcolor=\color{white},
+    commentstyle=\color{codegray},
+    keywordstyle=\color{blue},
+    stringstyle=\color{codered},
+    basicstyle=\tiny\ttfamily, % Use a very small font
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=none,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2,
+    frame=tb, % Add a frame top and bottom
+    framerule=0.5pt,
+    rulesepcolor=\color{black},
+}
+\captionsetup[lstlisting]{font=scriptsize, labelfont=bf} % Make caption smaller
+
+% DOCUMENT START
+\begin{document}
+
+\pagestyle{empty} % No page numbers
+
+% Use 3 columns, a very small font, and maximally reduced line spacing
+\begin{multicols}{3}
+\setstretch{0.85} % Aggressively reduce line spacing
+\footnotesize
+\setlength{\parskip}{0pt}
+\setlength{\parsep}{0pt}
+\setlength{\itemsep}{0pt}
+\setlength{\topsep}{0pt}
+
+% --- SECTION 1: BASH & SHELL COMMANDS ---
+
+\cmd{pwd}: \textbf{P}rint \textbf{W}orking \textbf{D}irectory.
+\cmd{ls}: \textbf{L}i\textbf{s}t directory contents.
+\cmd{cd <dir>}: \textbf{C}hange \textbf{D}irectory.
+\cmd{man <cmd>}: View the command \textbf{man}ual.
+\cmd{sudo <cmd>}: Run a command with root privileges.
+
+\cmd{mkdir <dir>}: \textbf{M}a\textbf{k}e a new \textbf{dir}ectory.
+\cmd{touch <file>}: Creates a new, empty file.
+\cmd{cp <src> <dest>}: \textbf{C}o\textbf{p}y files. Use \cmd{-i} flag to prevent accidental overwrites.
+\cmd{mv <src> <dest>}: \textbf{M}o\textbf{v}e or rename files.
+\cmd{rm <file>}: \textbf{R}e\textbf{m}ove (delete) files. Use \cmd{-r} to remove directories recursively.
+\cmd{cat <file>}: Display file contents.
+\cmd{less <file>}: View file contents one page at a time.
+\cmd{nano} / \cmd{vi}: Terminal-based text editors.
+
+\textbf{find}: Searches for files by name, type, size, etc. \\
+\cmd{find <path> [expressions]}
+\begin{itemize}[nosep] % Use [nosep] to remove all vertical space
+    \item \cmd{-name "*.txt"}: Find by filename pattern.
+    \item \cmd{-type f}: Find files (\cmd{d} for directories).
+    \item \cmd{-size +1M}: Find files larger than 1MB.
+    \item \cmd{-delete}: Deletes any files found.
+\end{itemize}
+
+\vspace{1em} % Added a little space here for separation in the example
+
+\textbf{grep}: Searches inside files for lines matching a pattern (regex). \\
+\cmd{grep [opts] <pattern> [file]}
+\begin{itemize}[nosep] % Use [nosep] again for the second list
+    \item \cmd{-c}: Prints only a \textbf{c}ount of matching lines.
+    \item \cmd{-r}: Searches \textbf{r}ecursively through directories.
+    \item \cmd{-l}: Prints on\textbf{l}y filenames containing matches.
+    \item \cmd{-i}: Performs a case-\textbf{i}nsensitive search.
+\end{itemize}
+
+\textbf{Redirection \& Pipes}:
+\cmd{> file}: Redirects output, \textbf{overwriting} `file`.
+\cmd{>> file}: Redirects output, \textbf{appending} to `file`.
+\cmd{2> file}: Redirects standard \textbf{error}.
+\cmd{2>/dev/null}: Discards all error messages.
+\textbf{Pipe `|`}: Chains commands. Sends output of the left command as input to the right command.
+
+\textbf{Shell Environment \& Scripting}: \\
+\textbf{Variables}: \cmd{\$USER}, \cmd{\$PATH}, \cmd{\$HOME}. View with \cmd{env}. \\
+\textbf{Expansion}: \cmd{*} (glob), \cmd{\$(date)} (command sub), \cmd{lec\_{01..13}} (brace). \\
+\textbf{Scripting}: Automates commands.
+\begin{itemize}[nosep] % Use [nosep] to remove all vertical space
+    \item \textbf{Shebang}: Must be first line, e.g., \cmd{\#\!/bin/bash}.
+    \item \textbf{Execution}: \cmd{chmod +x script.sh}, then \cmd{./script.sh}.
+    \item \textbf{Arguments}: \cmd{\$1}, \cmd{\$2}, \cmd{\$\#} (count), \cmd{\$}@ (all).
+\end{itemize}
+\textbf{If-Else Syntax}:
+\begin{verbatim}
+if [[ condition ]]; then
+  # commands...
+fi
+\end{verbatim}
+\textbf{For Loop Syntax}:
+\begin{verbatim}
+for var in item1; do
+  # commands using $var...
+done
+\end{verbatim}
+
+% \columnbreak % Manually break to the next column
+
+\textbf{Complex Chained Commands}: \\
+\textbf{1. Count all Python files on the system:} \\
+\cmd{sudo find / -type f -name "*.py" 2>/dev/null | wc -l}
+\begin{itemize}[nosep] % Use [nosep] to remove all vertical space
+    \item \cmd{find /}: Searches the entire filesystem.
+    \item \cmd{-name "*.py"}: Finds files ending in \texttt{.py}.
+    \item \cmd{2>/dev/null}: Silences permission errors.
+    \item \cmd{| wc -l}: Pipes the file list to `wc` to count the lines.
+\end{itemize}
+
+\vspace{1em} % Added a little space here for separation in the example
+
+\textbf{2. Find the 5 largest files in \texttt{/usr/bin}:} \\
+\cmd{find /usr/bin -type f | xargs du -h | sort -rh | head -n 5}
+\begin{itemize}[nosep] % Use [nosep] again for the second list
+    \item \cmd{find ...}: Lists all files in \texttt{/usr/bin}.
+    \item \cmd{| xargs du -h}: Calculates disk usage for each file.
+    \item \cmd{| sort -rh}: Sorts reverse (\textbf{r}), human-readable (\textbf{h}).
+    \item \cmd{| head -n 5}: Shows the top 5 results.
+\end{itemize}
+
+\textbf{Permissions}: \\
+Use \cmd{ls -l} to view permissions and \cmd{chmod} to change them for \textbf{u}ser, \textbf{g}roup, and \textbf{o}thers (\textbf{r}ead, \textbf{w}rite, e\textbf{x}ecute).
+\begin{itemize}[nosep] % Use [nosep] to remove all vertical space
+    \item \cmd{chmod u+x file}: Adds execute permission for the user.
+    \item \cmd{chmod g-w file}: Removes write permission for the group.
+    \item \cmd{chmod o=r file}: Sets others' permission to read-only.
+\end{itemize}
+
+\vspace{1em} % Added a little space here for separation in the example
+
+\textbf{Other Useful Commands}: \\
+\cmd{wc}: Word, line, character count. \\
+\cmd{xargs}: Build/execute commands from stdin. \\
+\cmd{du}: Report disk usage. \\
+\cmd{sort}: Sort lines of text. \\
+\cmd{head}/\cmd{tail}: Show start/end of a file.
+
+
+% --- SECTION 2: PARALLEL COMPUTING (MERGED CONTENT) ---
+
+\textbf{Parallel Concepts}: \\
+\textbf{Processes \& Threads}:
+\begin{itemize}[nosep] % Use [nosep] to remove all vertical space
+    \item \textbf{Process:} Program in execution, isolated address space.
+    \item \textbf{Thread:} Execution unit within a process, shared address space.
+    \item \textbf{Context Switch:} OS saves/restores state to swap processes; costly.
+\end{itemize}
+
+\columnbreak % Manually break to the next column
+\textbf{Parallelism \& Performance}:
+\begin{itemize}[nosep] % Use [nosep] to remove all vertical space
+    \item \textbf{Thread-Level Parallelism:} Threads run on different CPU cores.
+    \item \textbf{Python GIL:} A lock that prevents multiple native threads from executing Python bytecodes at once. Limits CPU-bound parallelism but is released during I/O.
+    \item \textbf{Bottlenecks:} \textbf{Compute-bound} (CPU limit), \textbf{Memory-bound} (RAM limit), \textbf{I/O-bound} (disk limit).
+\end{itemize}
+
+\vspace{1em} % Added a little space here for separation in the example
+
+\textbf{Parallel Programming Strategies}:
+\begin{itemize}[nosep] % Use [nosep] again for the second list
+    \item \textbf{Decomposition:} Break problem into sub-tasks (e.g., \textbf{Map-Reduce}, \textbf{Embarrassingly Parallel}).
+    \item \textbf{Work Scheduling:} Assign tasks. \textbf{Static} (pre-defined) vs. \textbf{Dynamic} (at runtime).
+    \item \textbf{Orchestration:} Communication. \textbf{Message Passing} (separate memory) vs. \textbf{Shared Memory} (common memory).
+\end{itemize}
+
+% \columnbreak % Manually break to the next column
+
+\textbf{Performance Formulas}:
+\textbf{Speed-up (S)}: Measures gain from parallelization.
+$$ S = \frac{T_{s}}{T_{p}} $$
+\textbf{Amdahl's Law}: Max speed-up, limited by serial portion ($1-f$). Let $f$ be the parallelizable fraction and $N$ be the number of workers.
+$$ S \le \frac{1}{(1-f) + \frac{f}{N}} $$
+\textbf{Roofline Model}: Upper performance bound based on hardware.
+$$ \text{Perf.} \le \min(\text{Peak Perf.}, \text{AI} \times \text{Peak Mem. Bandwidth}) $$
+
+\textbf{Performance Analysis}:
+\textbf{perf}: Powerful Linux profiler. Gathers hardware (CPU cycles, cache misses) and software events to find bottlenecks.
+
+\textbf{Arithmetic Intensity (AI)}:
+Ratio of computational work per byte of memory accessed. High AI is compute-bound (good); low AI is memory-bound (bad).
+$$ \text{AI} = \frac{\text{Total Floating-Point Operations (FLOPS)}}{\text{Total Memory Traffic (Bytes)}} $$
+\textbf{Ex 1: Dot Product} \cmd{func(float* a, float* b, int n)}
+\begin{itemize}[nosep] % Use [nosep] to remove all vertical space
+    \item \textbf{FLOPS}: $2n$ (1 mult, 1 add per iteration).
+    \item \textbf{Memory}: $ \text{Total Traffic} = n \times (4+4) = 8n \text{ bytes} $ (read two 4-byte floats per iteration).
+    \item \textbf{AI}: $\frac{2n}{8n} = \frac{1}{4}$ FLOP/byte. \textbf{Memory-bound}. Caches do not help as there is no data reuse.
+\end{itemize}
+
+\vspace{1em} % Added a little space here for separation in the example
+
+\textbf{Ex 2: Matrix Multiplication} \cmd{C[i][j] += A[i][k] * B[k][j]}
+\begin{itemize}[nosep] % Use [nosep] again for the second list
+    \item \textbf{FLOPS}: $ \text{Total FLOPS} = n \times n \times n \times 2 = 2n^3 $ (2 ops in 3 nested loops).
+    \item \textbf{Memory (Smart Compiler)}: \cmd{C[i][j]} is kept in a register. Read A ($n^3$ times), read B ($n^3$ times), write C ($n^2$ times). Traffic $\approx (n^3 + n^3 + n^2) \times 4 \approx 8n^3$ bytes for large $n$.
+    \item \textbf{Memory (Naive Compiler)}: \cmd{C[i][j]} is read/written in every \cmd{k} iteration. Solution notes $3n^3$ memory accesses.
+    $ \text{Traffic} = 3n^3 \times 4 = 12n^3 \text{ bytes} $
+    \item \textbf{AI (Smart Compiler)}: For large $n$, $\frac{2n^3}{8n^3} = \frac{1}{4}$ FLOP/byte. \textbf{Memory-bound}.
+    \item \textbf{AI (Naive Compiler)}: $ \text{AI} = \frac{2n^3}{12n^3} = \frac{1}{6} \text{ FLOP/byte} $
+    \item \textbf{Note}: High data reuse potential. Caching (e.g., tiling) can dramatically increase effective AI.
+\end{itemize}
+
+\textbf{Multi-Core Architecture}: \\
+\textbf{Memory Access Architectures}:
+\begin{itemize}[nosep] % Use [nosep] to remove all vertical space
+    \item \textbf{UMA (Uniform Memory Access):} All cores have the same latency and bandwidth when accessing any part of the main memory. This is common in consumer-grade computers (with $\le 16$ cores) and is easier to program for.
+    \item \textbf{NUMA (Non-Uniform Memory Access):} Different cores have different latencies to different parts of memory. A core can access its 'local' memory faster than memory attached to another core. This is common in high-end servers (with $\ge 16$ cores).
+\end{itemize}
+\columnbreak % Manually break to the next column
+\textbf{Cache Coherence:}
+In a multi-core system, hardware ensures that if one core modifies data in its cache, all other cores see that updated data, maintaining a consistent view of memory. This process is automatic but has a performance cost.
+\textbf{GPU vs. CPU}
+A CPU is like a few highly intelligent brains, good at complex, latency-sensitive tasks. A GPU is like a massive number of less sophisticated brains, excelling at simple, repetitive tasks that can be done in parallel (SIMD on steroids). GPUs have much higher memory bandwidth ($\sim 1$ TB/s vs $\sim 50$ GB/s) but lower clock speeds ($\sim 2$ GHz) than CPUs.
+\textbf{GPU Components}:
+\begin{itemize}
+    \item \textbf{Streaming Multiprocessor (SM):} An SM is a key component of a GPU, roughly analogous to a CPU core but designed for massive parallelism.
+    \item \textbf{Streaming Processor (SP):} These are the 'cores' within an SM. They contain execution units but lack complex control logic or private caches.
+\end{itemize}
+\textbf{GPU Hierarchy}:
+\begin{itemize}
+    \item \textbf{Warp:} A group of 32 threads that all execute the same instruction at the same time on different data (a model called SIMT - Single Instruction, Multiple Threads).
+    \item \textbf{Thread Block:} A group of warps that execute on the same SM and can share data through its fast shared memory.
+    \item \textbf{Grid:} A group of all the thread blocks that a programmer launches to run a particular task.
+\end{itemize}
+\textbf{Branch Divergence}:
+In a GPU, if threads within the same warp take different paths in an if-else statement (branching), the warp must execute both paths sequentially. This can significantly reduce performance.
+
+
+\textbf{Shared-Memory Computing Fundamentals}:
+Shared-memory parallel computing is a model where multiple workers, known as \textbf{threads}, operate within a single process. All threads share access to the same main memory, though they might have their own private "workspace". This approach is also called \textbf{"multithreading"}.
+
+\textbf{Race Conditions}:
+This is a major issue where the final result of a program depends on the non-deterministic order in which threads are executed. This often happens because common operations are not \textbf{atomic}, meaning they are not a single, indivisible step. For example, an increment operation (\texttt{counter++}) is actually three steps:
+\begin{itemize}
+    \item Load the value from memory into a register.
+    \item Increment the value in the register.
+    \item Write the new value back to memory.
+\end{itemize}
+\textbf{Memory Models \& Reordering}
+CPUs can reorder instructions to improve performance, as long as the final result is the same for a single thread. In multi-core systems, this can cause unexpected behavior.
+\begin{itemize}
+    \item \textbf{Weak Memory Model}: Allows aggressive reordering for higher performance.
+    \item \textbf{Strong Memory Model}: Does not allow such reordering, which is less efficient but safer.
+\end{itemize}
+\textbf{Synchronization Primitives}
+To prevent race conditions and coordinate threads, we use synchronization mechanisms.
+\textbf{Locks / Mutexes}: \\
+A \textbf{mutex} (short for mutual exclusion) ensures that only one thread can access a "critical section" of code at a time.
+\begin{itemize}[nosep] % Use [nosep] to remove all vertical space
+    \item \textbf{Main Operations}:
+    \begin{itemize}[nosep] % Apply nosep to the inner list as well
+        \item \texttt{acquire()} or \texttt{lock()}: A thread calls this to gain exclusive access. If another thread holds the lock, this thread is blocked (put to sleep) until the lock is released.
+        \item \texttt{release()} or \texttt{unlock()}: The thread that acquired the lock calls this to release it, allowing other waiting threads to proceed.
+    \end{itemize}
+    \item \textbf{Key Feature}: Mutexes are \textbf{ownership-based}; the same thread that locks it must be the one to unlock it.
+\end{itemize}
+\textbf{Semaphores}: \\
+A semaphore is essentially a counter with atomic operations used for signaling between threads.
+\begin{itemize}[nosep] % Use [nosep] to remove all vertical space
+    \item \textbf{Main Operations}:
+    \begin{itemize}[nosep] % Apply nosep to the inner list as well
+        \item \texttt{acquire()} or \texttt{wait()}: Decrements the counter. If the counter goes below zero, the thread blocks.
+        \item \texttt{release()} or \texttt{signal()}: Increments the counter and wakes up a waiting thread if any exist.
+    \end{itemize}
+    \item \textbf{Key Feature}: Semaphores are \textbf{signal-based}. Unlike a mutex, any thread can call \texttt{release()} (signal), regardless of which thread called \texttt{acquire()} (wait). They are excellent for managing access to a pool of resources, like in the \textbf{producer-consumer problem}.
+\end{itemize}
+\textbf{Condition Variables}: \\
+Condition variables allow threads to wait for more complex, user-defined conditions to become true. They are always used in conjunction with a mutex.
+\begin{itemize}[nosep] % Use [nosep] to remove all vertical space
+    \item \textbf{Main Operations}:
+    \begin{itemize}[nosep] % Apply nosep to the inner list as well
+        \item \texttt{wait()}: Atomically releases the associated mutex and blocks the thread until it is notified.
+        \item \texttt{notify()}: Wakes up one waiting thread.
+        \item \texttt{notify\_all()}: Wakes up all waiting threads.
+    \end{itemize}
+\end{itemize}
+\textbf{Barriers}: \\
+A barrier is a simple mechanism that blocks a group of threads until all of them have reached the barrier. This is useful for synchronizing the start time of an operation across multiple threads.
+\begin{itemize}[nosep] % Use [nosep] to remove all vertical space
+    \item \textbf{Main Operation}:
+    \begin{itemize}[nosep] % Apply nosep to the inner list as well
+        \item \texttt{wait()}: The calling thread blocks here until the required number of threads (\texttt{parties}) have also called \texttt{wait()}.
+    \end{itemize}
+\end{itemize}
+
+\textbf{Common Problems \& Solutions}: \\
+\textbf{Producer-Consumer Problem}: \\
+A classic scenario where "producer" threads add items to a shared buffer and "consumer" threads remove them. Problems include producers adding to a full buffer (\textbf{overflow}) or consumers taking from an empty one (\textbf{underflow}).
+
+\vspace{1em} % Added a little space here for separation in the example
+
+\textbf{Deadlocks}: \\
+A situation where two or more threads are blocked forever, each waiting for a resource held by the other.
+\begin{itemize}[nosep] % Use [nosep] to remove all vertical space
+    \item \textbf{Example}: Thread 1 locks A then tries to lock B, while Thread 2 locks B then tries to lock A.
+    \item \textbf{Avoidance}: The simplest way to avoid deadlocks is to enforce a \textbf{global lock ordering}. All threads must acquire locks in the same specified order.
+\end{itemize}
+\textbf{Python Implementation Tools}: \\
+Python provides modules for managing threads and synchronization. \\
+\textbf{\texttt{threading} Module}: \\
+This module provides low-level, fine-grained control over threads and includes implementations for all the synchronization primitives discussed (Locks, Semaphores, etc.).
+\begin{itemize}[nosep] % Use [nosep] to remove all vertical space
+    \item \textbf{Typical Usage Pattern}:
+    \begin{enumerate}[nosep] % Apply nosep to the inner list as well
+        \item Define a \texttt{worker} function.
+        \item Create a \texttt{threading.Thread} object, passing the \texttt{worker} as the target.
+        \item Call \texttt{t.start()} to begin execution.
+        \item Call \texttt{t.join()} to wait for the thread to complete.
+    \end{enumerate}
+\end{itemize}
+\textbf{\texttt{concurrent.futures} Module} \\
+This is a higher-level interface for managing pools of threads or processes. It's generally preferred unless you need fine-grained control. It creates a pool of threads that can be reused for multiple tasks.
+\begin{itemize}[nosep] % Use [nosep] to remove all vertical space
+    \item \textbf{Typical Usage Pattern with \texttt{ThreadPoolExecutor}}:
+    \begin{enumerate}[nosep] % Apply nosep to the inner list as well
+        \item Define a \texttt{worker} function that processes data and returns a result.
+        \item Use a \texttt{with ThreadPoolExecutor(...)} as executor: block to manage the thread pool's lifecycle.
+        \item Use \texttt{executor.map(worker, data\_chunks)} to apply the worker function to each item in an iterable and collect the results.
+    \end{enumerate}
+\end{itemize}
+
+\columnbreak % Manually break to the next column
+\textbf{Example 1:Barrier}
+The barrier ensures that the main thread (thread 0) only proceeds to calculate the final total sum \textit{after} all other worker threads have finished calculating and storing their partial sums.
+\begin{lstlisting}[style=pythoncompact]
+import threading
+from concurrent.futures import ThreadPoolExecutor
+import numpy as np
+import time
+
+n_workers = 16
+partial_sums = [None] * n_workers
+final_answer = [0]
+
+# len(data) is divisible by n_workers for simplicity
+data = np.random.rand(n_workers * 1_000_000) 
+barrier = threading.Barrier(n_workers)  ## !
+
+def worker(thread_id):
+    start = thread_id * len(data)//n_workers ## !
+    end = (thread_id + 1) * len(data)//n_workers ## !
+    partial_sums[thread_id] = np.sum(data[start : end]) ## !
+
+    barrier.wait() ## !
+
+    if thread_id == 0: ## !
+        final_answer[0] = np.sum(partial_sums) ## !
+
+def main():
+    threads = []
+    for i in range(n_workers):
+        t = threading.Thread(target=worker, args=(i,))
+        threads.append(t)
+        t.start()
+    
+    for i, t in enumerate(threads):
+        t.join()
+    
+if __name__ == "__main__":
+    start = time.time()
+    main()
+    elapsed_parallel = time.time() - start
+    print(f"Time taken in parallel: {elapsed_parallel} s")
+
+    start = time.time()
+    np.sum(data)
+    elapsed_serial = time.time() - start
+    print(f"Time taken in serial: {elapsed_serial} s")
+    print(f"Speed-up = {elapsed_serial/elapsed_parallel}")
+
+    print(f"Serial sum: {np.sum(data)}")
+    print(f"Parallel sum: {final_answer[0]}")
+\end{lstlisting}
+
+\textbf{Example 2:Race Condition\&The Lock}
+To count all the prime numbers up to a large number N (8 million in this case) and to compare the execution time of three different approaches:Serial, Manual Threading, Thread Pool
+\begin{lstlisting}[style=pythoncompact]
+import threading
+from concurrent.futures import ThreadPoolExecutor
+import time
+import numpy as np ## !
+
+n_workers = 8
+N = n_workers * 1_000_000
+count = 0 # counter for number of primes
+count_lock = threading.Lock() ## !
+idx = np.random.permutation(N) ## !
+
+def is_prime(n):
+    if n < 2: ## !
+        return False ## !
+    if n == 2: ## !
+        return True ## !
+    if n % 2 == 0: ## !
+        return False ## !
+    for i in range(3, int(n**0.5) + 1, 2): ## !
+        if n % i == 0: ## !
+            return False ## !
+    return True ## !
+
+def worker(thread_id):
+    global count  ## !
+ 
+    data = (i for i in range(thread_id * (N//n_workers), (thread_id+1) * (N//n_workers))) ## !
+
+    for n in data: ## !
+        if is_prime(n): ## !
+            with count_lock: ## !
+                count += 1 ## !
+
+    # for n in idx[thread_id * (N//n_workers): (thread_id+1) * (N//n_workers)]:
+    #     if is_prime(n):
+    #         with count_lock:
+    #             count += 1
+
+def serial():
+    count = 0
+
+    for i in range(N):
+        if is_prime(i):
+            count += 1
+
+    return count
+
+def manual_threading():
+    threads = []
+    for i in range(n_workers):
+        t = threading.Thread(target=worker, args=(i,))
+        threads.append(t)
+        t.start()
+
+    for t in threads:
+        t.join()
+
+def thread_pool():
+    with ThreadPoolExecutor(max_workers=n_workers) as executor: ## !
+        executor.map(worker, [i for i in range(n_workers)]) ## !
+
+def main():
+    start = time.time()
+    manual_threading()
+    manual_time = time.time() - start
+
+    start = time.time()
+    thread_pool()
+    thread_pool_time = time.time() - start
+
+    start = time.time()
+    serial()
+    serial_time = time.time() - start
+
+    print(f"Time taken with manual threading: {manual_time} seconds")
+    print(f"Time taken with using thread pool: {thread_pool_time} seconds")
+    print(f"Serial time taken: {serial_time} seconds")
+
+if __name__ == "__main__":
+    main()
+\end{lstlisting}
+
+\textbf{Example 3:Files sort ssh}
+Write a shell script titled ‘organize.sh’ that automatically organizes files in a directory based on their extensions and provides a summary report.
+\begin{lstlisting}[style=pythoncompact]
+#!/bin/bash   !
+
+# check if a directory is given
+if [[ $# = 0 ]]; then
+    target_directory="."
+else
+    target_directory=$1
+fi
+
+# validate target_directory
+# use double quotes around $target_directory to handle any blank spaces
+if [[ ! -e "$target_directory" ]]; then
+    echo "Error: The given directory does not exist"
+    exit 1
+fi
+
+if [[ ! -d "$target_directory" ]]; then
+    echo "Error: The given path is not a directory"
+    exit 1
+fi
+
+# check in case the directory is not readable
+if [[ ! -r "$target_directory" ]]; then
+    echo "Error: The given directory is not readable."
+    exit 1
+fi
+
+# counters to keep track of various extensions
+total_files=0
+images_count=0
+audio_count=0
+videos_count=0
+documents_count=0
+scripts_count=0
+others_count=0
+
+# various extensions
+image_ext="jpg jpeg png gif bmp"
+audio_ext="mp3 wav"
+video_ext="mp4 wmv mov mvi"
+doc_ext="pdf doc docx txt md"
+script_ext="sh py js php"
+
+for file in "$target_directory"/*; do
+    # skip if it is not a regular file
+    if [[ ! -f "$file" ]]; then
+        continue
+    fi
+
+    # skip if it is a hidden file
+    if [[ "$(basename "$file")" == .* ]]; then
+        continue
+    fi
+
+    total_files=$((total_files + 1))
+
+    # check file type
+    file_type=""
+
+    for ext in $image_ext; do
+        if [[ "$file" == *.$ext ]]; then
+            file_type="image"
+            break
+        fi
+    done
+
+    for ext in $audio_ext; do
+        if [[ "$file" == *.$ext ]]; then
+            file_type="audio"
+            break
+        fi
+    done
+
+    for ext in $video_ext; do
+        if [[ "$file" == *.$ext ]]; then
+            file_type="video"
+            break
+        fi
+    done
+
+    for ext in $doc_ext; do
+        if [[ "$file" == *.$ext ]]; then
+            file_type="doc"
+            break
+        fi
+    done
+
+    for ext in $script_ext; do
+        if [[ "$file" == *.$ext ]]; then
+            file_type="script"
+            break
+        fi
+    done
+
+    if [[ -z "$file_type" ]]; then
+        file_type="other"
+    fi
+
+    echo "$file_type"
+
+    # moving files depending on their extensions
+    # it is much better to use case statements here, but since I haven't covered it, oh well
+    if [[ "$file_type" == "image" ]]; then
+        mkdir -p "$target_directory"/Images
+        mv "$file" "$target_directory"/Images
+        images_count=$((images_count + 1))
+    fi
+
+    if [[ "$file_type" == "audio" ]]; then
+        mkdir -p "$target_directory"/Audio
+        mv "$file" "$target_directory"/Audio
+        audio_count=$((audio_count + 1))
+    fi
+
+    if [[ "$file_type" == "video" ]]; then
+        mkdir -p "$target_directory"/Videos
+        mv "$file" "$target_directory"/Videos
+        videos_count=$((videos_count + 1))
+    fi
+
+    if [[ "$file_type" == "doc" ]]; then
+        mkdir -p "$target_directory"/Documents
+        mv "$file" "$target_directory"/Documents
+        documents_count=$((documents_count + 1))
+    fi
+
+    if [[ "$file_type" == "script" ]]; then
+        mkdir -p "$target_directory"/Scripts
+        mv "$file" "$target_directory"/Scripts
+        scripts_count=$((scripts_count + 1))
+    fi
+
+    if [[ "$file_type" == "other" ]]; then
+        mkdir -p "$target_directory"/Others
+        mv "$file" "$target_directory"/Others
+        others_count=$((others_count + 1))
+    fi
+done
+
+# print out summary report
+echo "Total number of files processed: $total_files"
+echo "Number of image files moved: $images_count"
+echo "Number of audio files moved: $audio_count"
+echo "Number of video files moved: $videos_count"
+echo "Number of document files moved: $documents_count"
+echo "Number of script files moved: $scripts_count"
+echo "Number of other files moved: $others_count"
+
+\end{lstlisting}
+\end{multicols}
+\end{document}
